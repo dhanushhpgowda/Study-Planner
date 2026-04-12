@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Create Study Plan — StudyMind{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-header">
+    <a href="/" class="back-link">← Back</a>
+    <div class="form-badge">✦ AI-Powered</div>
+    <h1>Build your study plan</h1>
+    <p>Fill in the details below and Claude AI will generate a personalised day-by-day schedule for you.</p>
+  </div>
+
+  <form class="plan-form" action="/plan/generate" method="POST" id="planForm">
+
+    <!-- PERSONAL INFO -->
+    <div class="form-section">
+      <div class="section-tag">01</div>
+      <h2>About you</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Your name</label>
+          <input type="text" id="name" name="name" placeholder="e.g. Arjun" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required />
+        </div>
+      </div>
+    </div>
+
+    <!-- EXAM DETAILS -->
+    <div class="form-section">
+      <div class="section-tag">02</div>
+      <h2>Exam details</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="plan_title">Plan name</label>
+          <input type="text" id="plan_title" name="plan_title" placeholder="e.g. JEE Mains 2025" required />
+        </div>
+        <div class="form-group">
+          <label for="exam_date">Exam date</label>
+          <input type="date" id="exam_date" name="exam_date" min="{{ today }}" required />
+        </div>
+        <div class="form-group">
+          <label for="daily_hours">Study hours per day</label>
+          <div class="range-wrap">
+            <input type="range" id="daily_hours" name="daily_hours" min="1" max="12" step="0.5" value="4" oninput="updateHours(this.value)" />
+            <span class="range-val" id="hoursVal">4 hrs</span>
+          </div>
+        </div>
+      </div>
+      <div class="days-preview" id="daysPreview">
+        Select an exam date to see how many days you have
+      </div>
+    </div>
+
+    <!-- SUBJECTS -->
+    <div class="form-section">
+      <div class="section-tag">03</div>
+      <h2>Your subjects</h2>
+      <p class="section-sub">Add each subject you need to study. Harder subjects get more AI-allocated time.</p>
+
+      <div id="subjectList">
+        <!-- Subject rows injected by JS -->
+      </div>
+
+      <button type="button" class="btn-add-subject" onclick="addSubject()">
+        + Add subject
+      </button>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="form-submit">
+      <div class="submit-note">
+        ✦ Claude AI will now generate your personalised schedule. This takes about 10–20 seconds.
+      </div>
+      <button type="submit" class="btn-generate" id="submitBtn">
+        <span id="btnText">Generate my study plan →</span>
+        <span id="btnLoader" style="display:none">Generating… ✦</span>
+      </button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/planner.js') }}"></script>
+{% endblock %}

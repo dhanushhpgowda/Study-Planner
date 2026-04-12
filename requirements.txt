@@ -1,0 +1,11 @@
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+psycopg2-binary
+python-dotenv
+anthropic
+APScheduler
+Flask-Mail
+reportlab
+Werkzeug
+gunicorn
