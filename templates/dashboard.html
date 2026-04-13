@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ plan.title }}{% endblock %}
+
+{% block content %}
+<div class="dash-page">
+
+  <!-- HEADER -->
+  <div class="dash-header">
+    <div>
+      <a href="/dashboard" class="back-link">← All plans</a>
+      <h1>{{ plan.title }}</h1>
+      <p class="dash-sub">{{ plan.user.name }} · Exam on {{ plan.exam_date.strftime('%B %d, %Y') }}</p>
+    </div>
+    <div class="dash-header-actions">
+      <a href="/plan/{{ plan.id }}" class="btn-outline">View schedule →</a>
+    </div>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="stat-cards">
+    <div class="stat-card card-streak">
+      <div class="stat-card-icon">🔥</div>
+      <div class="stat-card-val">{{ streak }}</div>
+      <div class="stat-card-label">Day streak</div>
+    </div>
+    <div class="stat-card card-progress">
+      <div class="stat-card-icon">◎</div>
+      <div class="stat-card-val">{{ plan.progress_percent }}%</div>
+      <div class="stat-card-label">Overall progress</div>
+    </div>
+    <div class="stat-card card-time">
+      <div class="stat-card-icon">⏱</div>
+      <div class="stat-card-val">{{ (total_minutes // 60) }}h {{ total_minutes % 60 }}m</div>
+      <div class="stat-card-label">Total studied</div>
+    </div>
+    <div class="stat-card card-days">
+      <div class="stat-card-icon">📅</div>
+      <div class="stat-card-val">{{ plan.days_until_exam }}</div>
+      <div class="stat-card-label">Days until exam</div>
+    </div>
+    <div class="stat-card card-missed">
+      <div class="stat-card-icon">✗</div>
+      <div class="stat-card-val">{{ missed_sessions }}</div>
+      <div class="stat-card-label">Skipped sessions</div>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+
+    <!-- WEEKLY ACTIVITY -->
+    <div class="dash-card dash-card-wide">
+      <div class="dash-card-header">
+        <h2>Weekly activity</h2>
+        <span class="dash-card-sub">Last 7 days</span>
+      </div>
+      <div class="weekly-chart" id="weeklyChart">
+        {% for day in weekly %}
+        <div class="week-col">
+          <div class="week-bar-wrap">
+            <div class="week-bar"
+                 data-total="{{ day.total }}"
+                 data-completed="{{ day.completed }}"
+                 style="height: {{ [day.completed * 20, 4]|max }}px"
+                 title="{{ day.completed }}/{{ day.total }} sessions · {{ day.minutes }}min">
+            </div>
+          </div>
+          <div class="week-label">{{ day.date }}</div>
+          <div class="week-count">{{ day.completed }}/{{ day.total }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- SUBJECT PROGRESS -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h2>Subject progress</h2>
+      </div>
+      <div class="subject-progress-list">
+        {% for name, data in subject_progress.items() %}
+        <div class="subj-prog-item">
+          <div class="subj-prog-top">
+            <span class="subj-prog-name">{{ name }}</span>
+            <span class="subj-prog-pct">{{ data.percent }}%</span>
+          </div>
+          <div class="subj-prog-bar">
+            <div class="subj-prog-fill" style="width: {{ data.percent }}%"></div>
+          </div>
+          <div class="subj-prog-meta">
+            {{ data.completed }}/{{ data.total }} sessions ·
+            {{ data.minutes // 60 }}h {{ data.minutes % 60 }}m total
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- TODAY'S SESSIONS -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h2>Today's sessions</h2>
+        <span class="dash-card-sub">{{ today.strftime('%A, %b %d') }}</span>
+      </div>
+      {% if today_sessions %}
+      <div class="today-list">
+        {% for s in today_sessions %}
+        <div class="today-item {% if s.completed %}today-done{% elif s.missed %}today-missed{% endif %}">
+          <div class="today-item-left">
+            <div class="today-dot type-{{ s.session_type }}"></div>
+            <div>
+              <div class="today-subject">{{ s.subject.name if s.subject else 'General' }}</div>
+              <div class="today-topic">{{ s.topic }}</div>
+            </div>
+          </div>
+          <div class="today-item-right">
+            <span class="today-dur">{{ s.duration_minutes }}m</span>
+            {% if s.completed %}
+            <span class="today-status done">✓</span>
+            {% elif s.missed %}
+            <span class="today-status missed">✗</span>
+            {% else %}
+            <a href="/plan/{{ plan.id }}" class="btn-sm btn-sm-primary">Go →</a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="no-today">
+        <p>No sessions scheduled for today.</p>
+        <a href="/plan/{{ plan.id }}" class="btn-sm">View full schedule</a>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- OVERALL PROGRESS RING -->
+    <div class="dash-card dash-card-center">
+      <div class="dash-card-header">
+        <h2>Completion</h2>
+      </div>
+      <div class="big-ring-wrap">
+        <svg class="big-ring" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="66" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12"/>
+          <circle cx="80" cy="80" r="66" fill="none" stroke="#f5a623" stroke-width="12"
+            stroke-linecap="round"
+            stroke-dasharray="{{ (plan.progress_percent / 100 * 414.7)|round(1) }} 414.7"
+            transform="rotate(-90 80 80)"
+            class="ring-anim"/>
+        </svg>
+        <div class="big-ring-label">
+          <div class="big-ring-pct">{{ plan.progress_percent }}%</div>
+          <div class="big-ring-sub">{{ completed_sessions }} of {{ total_sessions }}</div>
+          <div class="big-ring-sub">sessions done</div>
+        </div>
+      </div>
+      <div class="completion-stats">
+        <div class="comp-stat">
+          <span class="comp-val green">{{ completed_sessions }}</span>
+          <span class="comp-label">Done</span>
+        </div>
+        <div class="comp-stat">
+          <span class="comp-val amber">{{ total_sessions - completed_sessions - missed_sessions }}</span>
+          <span class="comp-label">Remaining</span>
+        </div>
+        <div class="comp-stat">
+          <span class="comp-val coral">{{ missed_sessions }}</span>
+          <span class="comp-label">Skipped</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/progress.js') }}"></script>
+{% endblock %}

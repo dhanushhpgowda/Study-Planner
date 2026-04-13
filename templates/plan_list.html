@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}My Study Plans — StudyMind{% endblock %}
+
+{% block content %}
+<div class="list-page">
+  <div class="list-header">
+    <div>
+      <h1>My study plans</h1>
+      <p>Track your progress across all your exam preparations.</p>
+    </div>
+    <a href="/plan/new" class="btn-primary">+ New plan</a>
+  </div>
+
+  {% if plans %}
+  <div class="plans-grid">
+    {% for plan in plans %}
+    <div class="plan-card">
+      <div class="plan-card-top">
+        <div class="plan-card-info">
+          <h3>{{ plan.title }}</h3>
+          <span class="plan-user">{{ plan.user.name }}</span>
+        </div>
+        <div class="plan-card-badge {% if plan.days_until_exam <= 3 %}badge-danger{% elif plan.days_until_exam <= 7 %}badge-warn{% else %}badge-ok{% endif %}">
+          {{ plan.days_until_exam }}d left
+        </div>
+      </div>
+
+      <div class="plan-card-progress">
+        <div class="progress-bar-full">
+          <div class="progress-bar-fill" style="width: {{ plan.progress_percent }}%"></div>
+        </div>
+        <div class="progress-info">
+          <span>{{ plan.progress_percent }}% complete</span>
+          <span>{{ plan.completed_sessions }}/{{ plan.total_sessions }} sessions</span>
+        </div>
+      </div>
+
+      <div class="plan-card-subjects">
+        {% for subject in plan.subjects[:4] %}
+        <span class="subject-tag">{{ subject.name }}</span>
+        {% endfor %}
+        {% if plan.subjects|length > 4 %}
+        <span class="subject-tag tag-more">+{{ plan.subjects|length - 4 }}</span>
+        {% endif %}
+      </div>
+
+      <div class="plan-card-footer">
+        <span class="plan-date">Exam: {{ plan.exam_date.strftime('%b %d, %Y') }}</span>
+        <div class="plan-card-actions">
+          <a href="/dashboard/{{ plan.id }}" class="btn-sm">Dashboard</a>
+          <a href="/plan/{{ plan.id }}" class="btn-sm btn-sm-primary">View plan →</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">◈</div>
+    <h2>No plans yet</h2>
+    <p>Create your first AI-powered study plan and start preparing smarter.</p>
+    <a href="/plan/new" class="btn-primary">Create my first plan →</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
