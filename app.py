@@ -20,9 +20,11 @@ def create_app(config_name=None):
     from routes.main import main_bp
     from routes.planner import planner_bp
     from routes.tracker import tracker_bp
+    from routes.export import export_bp
     app.register_blueprint(main_bp)
     app.register_blueprint(planner_bp)
     app.register_blueprint(tracker_bp)
+    app.register_blueprint(export_bp)
 
     # Register models so Flask-Migrate can detect them
     from models import User, StudyPlan, Subject, StudySession  # noqa: F401

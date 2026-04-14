@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Export & Reschedule — {{ plan.title }}{% endblock %}
+
+{% block content %}
+<div class="export-page">
+  <div class="export-header">
+    <a href="/plan/{{ plan.id }}" class="back-link">← Back to schedule</a>
+    <h1>Export & Recovery</h1>
+    <p>Download your schedule as a PDF or recover missed study sessions.</p>
+  </div>
+
+  <div class="export-grid">
+
+    <!-- PDF EXPORT -->
+    <div class="export-card">
+      <div class="export-card-icon pdf-icon">↓</div>
+      <h2>Export as PDF</h2>
+      <p>Download your complete day-by-day study schedule as a clean, printable PDF. Perfect for printing or sharing.</p>
+      <div class="export-plan-info">
+        <div class="epi-row">
+          <span>Plan</span><strong>{{ plan.title }}</strong>
+        </div>
+        <div class="epi-row">
+          <span>Student</span><strong>{{ plan.user.name }}</strong>
+        </div>
+        <div class="epi-row">
+          <span>Exam date</span><strong>{{ plan.exam_date.strftime('%B %d, %Y') }}</strong>
+        </div>
+        <div class="epi-row">
+          <span>Total sessions</span><strong>{{ plan.total_sessions }}</strong>
+        </div>
+        <div class="epi-row">
+          <span>Progress</span><strong>{{ plan.progress_percent }}%</strong>
+        </div>
+      </div>
+      <a href="/plan/{{ plan.id }}/export/pdf" class="btn-export btn-pdf">
+        ↓ Download PDF
+      </a>
+    </div>
+
+    <!-- RESCHEDULE -->
+    <div class="export-card">
+      <div class="export-card-icon reschedule-icon">⟳</div>
+      <h2>Missed Day Recovery</h2>
+      <p>
+        {% if missed_count > 0 %}
+          You have <strong style="color: var(--coral)">{{ missed_count }} missed session(s)</strong>
+          that haven't been completed yet. Click below to redistribute them across your remaining days — without overloading any single day.
+        {% else %}
+          You're all caught up! No missed sessions to reschedule. Keep up the great work!
+        {% endif %}
+      </p>
+
+      {% if missed_count > 0 %}
+      <div class="missed-preview">
+        <div class="missed-badge">{{ missed_count }} sessions to reschedule</div>
+        <p class="missed-note">
+          ✦ Sessions will be spread across future days respecting your {{ plan.daily_hours }}h daily limit.
+        </p>
+      </div>
+      <button class="btn-export btn-reschedule" id="rescheduleBtn" onclick="doReschedule({{ plan.id }})">
+        ⟳ Reschedule missed sessions
+      </button>
+      {% else %}
+      <div class="all-good">
+        <div class="all-good-icon">✓</div>
+        <p>All caught up!</p>
+      </div>
+      {% endif %}
+
+      <div id="rescheduleResult" class="reschedule-result" style="display:none"></div>
+    </div>
+
+  </div>
+
+  <!-- QUICK STATS -->
+  <div class="export-stats">
+    <div class="export-stat">
+      <span class="es-val">{{ plan.total_sessions }}</span>
+      <span class="es-label">Total sessions</span>
+    </div>
+    <div class="export-stat">
+      <span class="es-val" style="color: var(--green)">{{ plan.completed_sessions }}</span>
+      <span class="es-label">Completed</span>
+    </div>
+    <div class="export-stat">
+      <span class="es-val" style="color: var(--amber)">{{ plan.total_sessions - plan.completed_sessions - missed_count }}</span>
+      <span class="es-label">Remaining</span>
+    </div>
+    <div class="export-stat">
+      <span class="es-val" style="color: var(--coral)">{{ missed_count }}</span>
+      <span class="es-label">Missed</span>
+    </div>
+    <div class="export-stat">
+      <span class="es-val">{{ plan.days_until_exam }}</span>
+      <span class="es-label">Days left</span>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function doReschedule(planId) {
+  const btn = document.getElementById('rescheduleBtn');
+  const result = document.getElementById('rescheduleResult');
+  btn.disabled = true;
+  btn.textContent = '⟳ Rescheduling...';
+
+  fetch(`/plan/${planId}/reschedule`, { method: 'POST' })
+    .then(r => r.json())
+    .then(data => {
+      result.style.display = 'block';
+      result.className = 'reschedule-result result-success';
+      result.innerHTML = `✓ ${data.message}`;
+      btn.textContent  = '✓ Done!';
+      setTimeout(() => {
+        window.location.href = `/plan/${planId}`;
+      }, 2000);
+    })
+    .catch(() => {
+      result.style.display = 'block';
+      result.className = 'reschedule-result result-error';
+      result.textContent = '✗ Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.textContent = '⟳ Reschedule missed sessions';
+    });
+}
+</script>
+{% endblock %}

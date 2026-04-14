@@ -1077,3 +1077,136 @@ input[type="range"] {
   .plans-grid { grid-template-columns: 1fr; }
   .dash-page, .list-page { padding: 100px 24px 60px; }
 }
+
+/* ============================================================
+   Day 4 — Export & Reschedule Styles
+   ============================================================ */
+
+.export-page { max-width: 900px; margin: 0 auto; padding: 100px 48px 80px; }
+
+.export-header { margin-bottom: 40px; }
+.export-header h1 {
+  font-family: var(--font-display);
+  font-size: 40px; font-weight: 800;
+  letter-spacing: -.03em; margin-bottom: 10px; margin-top: 12px;
+}
+.export-header p { font-size: 15px; color: var(--text2); }
+
+.export-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+
+.export-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+.export-card-icon {
+  width: 52px; height: 52px;
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 700;
+}
+.pdf-icon        { background: rgba(245,166,35,.12);  color: var(--amber);  border: 1px solid rgba(245,166,35,.25); }
+.reschedule-icon { background: rgba(139,124,246,.12); color: var(--purple); border: 1px solid rgba(139,124,246,.25); }
+
+.export-card h2 {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 800; letter-spacing: -.02em;
+}
+.export-card p { font-size: 14px; color: var(--text2); line-height: 1.7; }
+
+.export-plan-info {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.epi-row { display: flex; justify-content: space-between; font-size: 13px; }
+.epi-row span { color: var(--text3); }
+.epi-row strong { color: var(--text); }
+
+.btn-export {
+  display: block; text-align: center;
+  font-family: var(--font-display);
+  font-size: 15px; font-weight: 700;
+  padding: 14px 24px;
+  border-radius: var(--radius);
+  border: none; cursor: pointer;
+  transition: all .2s; margin-top: auto;
+  letter-spacing: -.01em;
+}
+.btn-pdf {
+  background: var(--amber); color: #0a0a0f;
+  text-decoration: none;
+}
+.btn-pdf:hover { background: var(--amber2); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,166,35,.25); }
+
+.btn-reschedule {
+  background: rgba(139,124,246,.15);
+  color: var(--purple);
+  border: 1px solid rgba(139,124,246,.35) !important;
+  width: 100%;
+}
+.btn-reschedule:hover { background: rgba(139,124,246,.25); transform: translateY(-2px); }
+.btn-reschedule:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+.missed-preview {
+  background: rgba(248,113,113,.08);
+  border: 1px solid rgba(248,113,113,.2);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.missed-badge {
+  display: inline-block;
+  font-size: 12px; font-weight: 700;
+  color: var(--coral);
+  background: rgba(248,113,113,.12);
+  border: 1px solid rgba(248,113,113,.25);
+  padding: 4px 12px; border-radius: 99px;
+  margin-bottom: 8px;
+}
+.missed-note { font-size: 12px; color: var(--text2); }
+
+.all-good {
+  text-align: center; padding: 24px;
+  background: rgba(74,222,128,.08);
+  border: 1px solid rgba(74,222,128,.2);
+  border-radius: var(--radius);
+}
+.all-good-icon { font-size: 32px; color: var(--green); margin-bottom: 8px; }
+.all-good p { font-size: 14px; color: var(--green); font-weight: 600; }
+
+.reschedule-result {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 14px; font-weight: 500;
+}
+.result-success { background: rgba(74,222,128,.1); color: var(--green); border: 1px solid rgba(74,222,128,.25); }
+.result-error   { background: rgba(248,113,113,.1); color: var(--coral); border: 1px solid rgba(248,113,113,.25); }
+
+.export-stats {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+.export-stat { text-align: center; }
+.es-val {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 32px; font-weight: 800;
+  letter-spacing: -.02em; color: var(--text);
+  margin-bottom: 6px;
+}
+.es-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; }
+
+@media (max-width: 700px) {
+  .export-grid  { grid-template-columns: 1fr; }
+  .export-stats { grid-template-columns: repeat(3, 1fr); }
+  .export-page  { padding: 100px 24px 60px; }
+}
