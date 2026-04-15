@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Study Chat — {{ plan.title }}{% endblock %}
+
+{% block content %}
+<div class="chat-page">
+
+  <!-- SIDEBAR -->
+  <div class="chat-sidebar">
+    <div class="chat-plan-info">
+      <a href="/plan/{{ plan.id }}" class="back-link">← Back to schedule</a>
+      <div class="chat-plan-name">{{ plan.title }}</div>
+      <div class="chat-plan-meta">{{ plan.user.name }} · {{ plan.days_until_exam }} days left</div>
+      <div class="chat-progress">
+        <div class="chat-progress-bar">
+          <div class="chat-progress-fill" style="width: {{ plan.progress_percent }}%"></div>
+        </div>
+        <span class="chat-progress-pct">{{ plan.progress_percent }}% done</span>
+      </div>
+    </div>
+
+    <!-- SUBJECTS -->
+    <div class="chat-subjects">
+      <div class="chat-section-label">Your subjects</div>
+      {% for subject in plan.subjects %}
+      <div class="chat-subject-tag diff-{{ subject.difficulty }}">
+        <span>{{ subject.name }}</span>
+        <span class="diff-badge">{{ subject.difficulty_label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- QUICK PROMPTS -->
+    <div class="chat-quick">
+      <div class="chat-section-label">Quick questions</div>
+      <button class="quick-btn" onclick="sendQuick('Give me today\'s study tips')">
+        💡 Today's tips
+      </button>
+      <button class="quick-btn" onclick="sendQuick('What should I focus on with {{ plan.days_until_exam }} days left?')">
+        🎯 What to focus on
+      </button>
+      <button class="quick-btn" onclick="sendQuick('Give me a quick memory technique for my subjects')">
+        🧠 Memory techniques
+      </button>
+      <button class="quick-btn" onclick="sendQuick('How should I manage exam stress?')">
+        😌 Manage stress
+      </button>
+      <button class="quick-btn" onclick="loadTips()">
+        ✦ Get AI study tips
+      </button>
+    </div>
+  </div>
+
+  <!-- CHAT MAIN -->
+  <div class="chat-main">
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <div class="chat-avatar">◈</div>
+        <div>
+          <div class="chat-title">StudyMind AI</div>
+          <div class="chat-status"><span class="status-dot"></span> Ready to help</div>
+        </div>
+      </div>
+      <button class="btn-clear" onclick="clearChat()">Clear chat</button>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg msg-ai">
+        <div class="msg-avatar">◈</div>
+        <div class="msg-bubble">
+          <p>Hey {{ plan.user.name }}! 👋 I'm your StudyMind AI assistant.</p>
+          <p>I know you're preparing for <strong>{{ plan.title }}</strong> with {{ plan.days_until_exam }} days to go. I can help you understand concepts, give study tips, and keep you motivated.</p>
+          <p>What would you like to work on today?</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIPS BOX -->
+    <div class="tips-box" id="tipsBox" style="display:none">
+      <div class="tips-header">
+        <span>✦ AI Study Tips</span>
+        <button onclick="document.getElementById('tipsBox').style.display='none'">✕</button>
+      </div>
+      <div class="tips-content" id="tipsContent"></div>
+    </div>
+
+    <!-- INPUT -->
+    <div class="chat-input-wrap">
+      <div class="chat-input-inner">
+        <textarea
+          id="chatInput"
+          class="chat-input"
+          placeholder="Ask anything about your subjects, study strategies, or exam prep..."
+          rows="1"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button class="chat-send-btn" id="sendBtn" onclick="sendMessage()">
+          <span id="sendIcon">→</span>
+          <span id="sendLoader" style="display:none">◌</span>
+        </button>
+      </div>
+      <div class="chat-input-hint">Press Enter to send · Shift+Enter for new line</div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const PLAN_ID = {{ plan.id }};
+</script>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}
