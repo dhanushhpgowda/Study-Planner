@@ -28,6 +28,10 @@ def create_app(config_name=None):
     app.register_blueprint(export_bp)
     app.register_blueprint(chat_bp)
 
+    # Start background scheduler for email reminders
+    from services.scheduler_jobs import init_scheduler
+    init_scheduler(app)
+
     # Register models so Flask-Migrate can detect them
     from models import User, StudyPlan, Subject, StudySession  # noqa: F401
 

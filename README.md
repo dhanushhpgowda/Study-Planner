@@ -110,7 +110,7 @@ study-planner/
 | 3 | Progress tracker dashboard | ✅ Done |
 | 4 | Missed day rescheduler + PDF export | ✅ Done |
 | 5 | AI study chat assistant | ✅ Done |
-| 6 | Email reminder system | ⏳ Pending |
+| 6 | Email reminder system | ✅ Done |
 | 7 | Polish, tests, deploy-ready | ⏳ Pending |
 
 ---

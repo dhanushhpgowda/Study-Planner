@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<!--
+  StudyMind Daily Reminder Email Template
+  This is the email sent to students every morning at 7:00 AM.
+  It is built dynamically in services/notifications.py using build_daily_email().
+
+  Variables injected:
+  - user.name         : Student name
+  - plan.title        : Plan title
+  - plan.exam_date    : Exam date
+  - plan.days_until_exam : Days remaining
+  - plan.progress_percent: % complete
+  - today_sessions    : List of StudySession objects for today
+-->
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudyMind Daily Reminder</title>
+</head>
+<body style="margin:0;padding:0;background-color:#0a0a0f;font-family:'Helvetica Neue',Arial,sans-serif;">
+  <div style="max-width:600px;margin:0 auto;padding:32px 16px;">
+
+    <div style="text-align:center;margin-bottom:32px;">
+      <span style="color:#f5a623;font-size:20px;font-weight:800;">◈ StudyMind</span>
+    </div>
+
+    <div style="background:#111118;border:1px solid #1e1e2e;border-radius:20px;padding:32px;margin-bottom:20px;text-align:center;">
+      <div style="font-size:36px;margin-bottom:8px;">📚</div>
+      <h1 style="color:#f0eee8;font-size:26px;font-weight:800;margin:0 0 8px;">
+        Good morning, [Student Name]!
+      </h1>
+      <p style="color:#9896a0;font-size:15px;margin:0 0 24px;">
+        Here's your study agenda for today
+      </p>
+      <div style="display:flex;justify-content:center;border:1px solid #1e1e2e;border-radius:12px;overflow:hidden;">
+        <div style="flex:1;padding:16px;background:#1e1e2e;text-align:center;border-right:1px solid #0a0a0f;">
+          <div style="font-size:22px;font-weight:800;color:#f5a623;">14</div>
+          <div style="font-size:11px;color:#5a5862;text-transform:uppercase;margin-top:4px;">Days left</div>
+        </div>
+        <div style="flex:1;padding:16px;background:#1e1e2e;text-align:center;border-right:1px solid #0a0a0f;">
+          <div style="font-size:22px;font-weight:800;color:#8b7cf6;">45%</div>
+          <div style="font-size:11px;color:#5a5862;text-transform:uppercase;margin-top:4px;">Progress</div>
+        </div>
+        <div style="flex:1;padding:16px;background:#1e1e2e;text-align:center;">
+          <div style="font-size:22px;font-weight:800;color:#2dd4bf;">3h 30m</div>
+          <div style="font-size:11px;color:#5a5862;text-transform:uppercase;margin-top:4px;">Today's load</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#111118;border:1px solid #1e1e2e;border-radius:20px;overflow:hidden;margin-bottom:20px;">
+      <div style="padding:20px 24px;border-bottom:1px solid #1e1e2e;">
+        <h2 style="color:#f0eee8;font-size:16px;font-weight:700;margin:0;">Today's sessions</h2>
+      </div>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="background:#0a0a0f;">
+            <th style="padding:10px 16px;text-align:left;font-size:11px;color:#5a5862;text-transform:uppercase;letter-spacing:0.06em;">Subject</th>
+            <th style="padding:10px 16px;text-align:left;font-size:11px;color:#5a5862;text-transform:uppercase;letter-spacing:0.06em;">Topic</th>
+            <th style="padding:10px 16px;text-align:center;font-size:11px;color:#5a5862;text-transform:uppercase;letter-spacing:0.06em;">Time</th>
+            <th style="padding:10px 16px;text-align:center;font-size:11px;color:#5a5862;text-transform:uppercase;letter-spacing:0.06em;">Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:10px 16px;border-bottom:1px solid #1e1e2e;font-size:14px;color:#f0eee8;">Mathematics</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #1e1e2e;font-size:14px;color:#9896a0;">Calculus — Integration</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #1e1e2e;font-size:14px;color:#f5a623;text-align:center;">90m</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #1e1e2e;font-size:14px;color:#9896a0;text-align:center;">Study</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 16px;font-size:14px;color:#f0eee8;">Physics</td>
+            <td style="padding:10px 16px;font-size:14px;color:#9896a0;">Kinematics revision</td>
+            <td style="padding:10px 16px;font-size:14px;color:#f5a623;text-align:center;">60m</td>
+            <td style="padding:10px 16px;font-size:14px;color:#9896a0;text-align:center;">Revision</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="text-align:center;margin-bottom:20px;">
+      <a href="http://localhost:5000/dashboard"
+         style="display:inline-block;background:#f5a623;color:#0a0a0f;font-weight:800;font-size:15px;
+                padding:14px 32px;border-radius:12px;text-decoration:none;">
+        Open my study plan →
+      </a>
+    </div>
+
+    <div style="background:rgba(139,124,246,0.08);border:1px solid rgba(139,124,246,0.2);border-radius:16px;padding:20px;text-align:center;margin-bottom:20px;">
+      <p style="color:#8b7cf6;font-size:14px;font-style:italic;margin:0;">
+        "Success is the sum of small efforts, repeated day in and day out."
+      </p>
+    </div>
+
+    <div style="text-align:center;padding:16px;">
+      <p style="color:#5a5862;font-size:12px;margin:0;">
+        StudyMind · Daily study reminder
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>
